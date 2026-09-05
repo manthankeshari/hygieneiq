@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Punjab Grill | HygieneIQ Command Center</title>
+<style>
+:root{
+  --bg:#f5f7fb;--panel:#fff;--text:#172033;--muted:#687386;--line:#e5e9f0;
+  --accent:#5b5ce2;--accent2:#7c3aed;--good:#149447;--warn:#c98200;--bad:#d7374f;
+  --shadow:0 8px 28px rgba(28,39,66,.08);--radius:16px;
+}
+*{box-sizing:border-box} body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text)}
+button,input,select{font:inherit} button{cursor:pointer}
+.app{display:flex;min-height:100vh}.sidebar{width:250px;background:#101528;color:#fff;padding:22px 16px;position:sticky;top:0;height:100vh;overflow-y:auto;overflow-x:hidden;flex-shrink:0;scrollbar-width:thin}
+.brand{font-size:21px;font-weight:800;padding:10px 12px 26px}.brand span{color:#9b9cff}
+.nav button{display:block;width:100%;border:0;background:transparent;color:#b9c1d4;text-align:left;padding:12px 13px;border-radius:10px;margin:4px 0}
+.nav button:hover,.nav button.active{background:#242b46;color:#fff}.nav small{display:block;color:#69738b;text-transform:uppercase;font-size:10px;letter-spacing:1.2px;padding:20px 13px 5px}
+.sidebar .mini{margin-top:20px;background:#1b2239;border-radius:12px;padding:12px;font-size:12px;color:#aeb7ca}
+.main{flex:1;min-width:0}.top{height:72px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:5}
+.top h1{font-size:20px;margin:0}.top .right{display:flex;gap:10px;align-items:center}.pill{padding:7px 10px;border-radius:20px;background:#eef0ff;color:#4b4cc7;font-size:12px;font-weight:700}
+.content{padding:24px 28px 40px;max-width:1500px;margin:auto}.page{display:none}.page.active{display:block}
+.grid{display:grid;gap:16px}.cards{grid-template-columns:repeat(4,minmax(0,1fr))}.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
+.kpi .label{color:var(--muted);font-size:12px;font-weight:600}.kpi .value{font-size:30px;font-weight:800;margin:8px 0}.delta{font-size:12px}.good{color:var(--good)}.warn{color:var(--warn)}.bad{color:var(--bad)}
+.section-title{display:flex;justify-content:space-between;align-items:center;margin:25px 0 12px}.section-title h2{font-size:16px;margin:0}.muted{color:var(--muted)}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap}.toolbar input,.toolbar select{background:#fff;border:1px solid var(--line);border-radius:9px;padding:9px 11px}
+.btn{border:1px solid var(--line);background:#fff;border-radius:9px;padding:9px 12px;font-weight:650}.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}.btn.danger{background:#fff2f3;color:var(--bad);border-color:#ffd3d8}
+.two{grid-template-columns:1.35fr 1fr}.three{grid-template-columns:repeat(3,1fr)}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line)}th{font-size:11px;text-transform:uppercase;color:var(--muted);letter-spacing:.6px}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border-radius:20px;font-size:11px;font-weight:750}.b-good{background:#e9f8ef;color:#147b3c}.b-warn{background:#fff5df;color:#a56500}.b-bad{background:#fff0f2;color:#bd2d44}.b-blue{background:#eef0ff;color:#4b4cc7}
+.progress{height:8px;background:#edf0f5;border-radius:10px;overflow:hidden}.progress>div{height:100%;background:var(--accent);border-radius:10px}
+.outlet{display:flex;align-items:center;gap:12px}.score{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font-weight:800;background:#eef0ff;color:#4b4cc7}
+.issue{border:1px solid var(--line);border-radius:12px;padding:12px;margin:9px 0;display:flex;justify-content:space-between;gap:12px}.issue strong{display:block;font-size:13px}.issue p{margin:5px 0 0;font-size:11px;color:var(--muted)}
+.hero{background:linear-gradient(135deg,#171b35,#2d2f72);color:#fff;border-radius:18px;padding:22px;box-shadow:var(--shadow);display:flex;justify-content:space-between;gap:20px}.hero h2{margin:0 0 7px;font-size:23px}.hero p{margin:0;color:#cbd0e4;max-width:700px;font-size:13px;line-height:1.5}
+.risk{font-size:34px;font-weight:850}.scan{display:grid;grid-template-columns:1.1fr 1fr;gap:16px}.drop{border:2px dashed #cfd5e2;border-radius:14px;min-height:270px;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;background:#fafbfe;position:relative;overflow:hidden}.drop img{max-width:100%;max-height:265px;border-radius:10px;display:none}.drop .placeholder{max-width:320px}.drop.drag{border-color:var(--accent);background:#f2f2ff}
+.list{display:grid;gap:10px}.row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}.row:last-child{border-bottom:0}
+.bar{display:flex;align-items:end;gap:9px;height:180px;padding:10px 5px 0}.bar div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:end;height:100%;gap:6px}.bar i{display:block;width:70%;max-width:44px;border-radius:7px 7px 2px 2px;background:var(--accent)}.bar span{font-size:10px;color:var(--muted)}
+.chat{height:360px;display:flex;flex-direction:column}.messages{flex:1;overflow:auto;padding:5px}.msg{max-width:82%;padding:10px 12px;border-radius:12px;margin:7px 0;font-size:12px;line-height:1.45}.ai{background:#f0f1ff}.me{background:#e9f8ef;margin-left:auto}.chatbar{display:flex;gap:8px;border-top:1px solid var(--line);padding-top:10px}.chatbar input{flex:1;border:1px solid var(--line);border-radius:9px;padding:10px}
+.modal{position:fixed;inset:0;background:rgba(8,12,25,.55);display:none;align-items:center;justify-content:center;z-index:20;padding:20px}.modal.open{display:flex}.modalbox{background:#fff;border-radius:18px;width:min(620px,100%);padding:22px;box-shadow:0 20px 70px rgba(0,0,0,.2)}
+.toast{position:fixed;right:22px;bottom:22px;background:#151a2b;color:#fff;padding:12px 15px;border-radius:10px;display:none;z-index:30;font-size:12px}
+@media(max-width:1050px){
+  .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .two,.scan{grid-template-columns:1fr}
+  .sidebar{width:220px}
+}
+
+@media(max-width:720px){
+  html,body{width:100%;min-width:0;overflow-x:hidden}
+  body{font-size:14px}
+  .app{display:block;min-height:100vh;width:100%}
+
+  /* Mobile navigation becomes a horizontal, swipeable rail instead of disappearing. */
+  .sidebar{
+    display:block;
+    position:sticky;
+    top:0;
+    width:100%;
+    height:auto;
+    max-height:none;
+    padding:9px 10px;
+    z-index:15;
+    overflow-x:auto;
+    overflow-y:hidden;
+    white-space:nowrap;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .sidebar::-webkit-scrollbar{display:none}
+  .brand{
+    display:inline-flex;
+    vertical-align:middle;
+    width:auto;
+    padding:4px 12px 4px 4px;
+    margin-right:6px;
+    font-size:15px;
+    white-space:nowrap;
+    align-items:center;
+  }
+  .brand small{display:none!important}
+  .nav{
+    display:inline-flex;
+    vertical-align:middle;
+    align-items:center;
+    gap:5px;
+    width:max-content;
+  }
+  .nav small{display:none}
+  .nav button{
+    display:inline-block;
+    width:auto;
+    margin:0;
+    padding:8px 10px;
+    border-radius:9px;
+    white-space:nowrap;
+    font-size:11px;
+  }
+  .sidebar .mini{display:none}
+
+  .main{width:100%;min-width:0}
+  .top{
+    height:auto;
+    min-height:58px;
+    padding:10px 14px;
+    gap:8px;
+    position:sticky;
+    top:57px;
+    z-index:10;
+  }
+  .top h1{
+    font-size:16px;
+    line-height:1.2;
+    max-width:72%;
+  }
+  .top .right{gap:6px}
+  .top .pill{
+    font-size:9px;
+    padding:6px 7px;
+  }
+  .top .btn{
+    padding:7px 8px;
+    font-size:12px;
+  }
+
+  .content{padding:14px 12px 28px;width:100%;max-width:none}
+  .page{width:100%;min-width:0}
+  .cards,.three{grid-template-columns:1fr}
+  .two,.scan{grid-template-columns:1fr}
+  .card{padding:14px;border-radius:13px;min-width:0}
+  .hero{
+    display:block;
+    padding:17px;
+    overflow:hidden;
+  }
+  .hero h2{font-size:19px;line-height:1.25}
+  .hero p{font-size:12px}
+  .risk{font-size:28px;margin-top:15px}
+
+  .section-title{
+    align-items:flex-start;
+    flex-wrap:wrap;
+    gap:9px;
+  }
+  .section-title h2{font-size:15px}
+  .toolbar{
+    width:100%;
+    display:grid;
+    grid-template-columns:1fr;
+  }
+  .toolbar input,.toolbar select,.toolbar .btn{
+    width:100%;
+    min-width:0;
+  }
+
+  /* Tables scroll horizontally inside their card instead of breaking the page. */
+  .card:has(table){
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+  table{
+    min-width:720px;
+    width:100%;
+  }
+  .card:has(table) table{
+    display:table;
+  }
+
+  /* Inventory / task controls */
+  #inventorySearch,#inventoryFilter,#taskSearch,#taskFilter,#regionSelect,#riskSelect{
+    width:100%;
+  }
+
+  /* Upload area */
+  .drop{
+    min-height:220px;
+    width:100%;
+  }
+  .drop input[type=file]{
+    max-width:100%;
+    font-size:11px;
+  }
+
+  /* Chat */
+  .chat{height:430px}
+  .messages{min-height:0}
+  .chatbar{flex-wrap:nowrap}
+  .chatbar input{min-width:0;width:100%}
+  .chatbar .btn{flex:0 0 auto}
+
+  /* Modals must fit above the mobile keyboard and remain scrollable. */
+  .modal{
+    align-items:flex-start;
+    padding:12px;
+    overflow-y:auto;
+  }
+  .modalbox{
+    width:100%;
+    max-height:calc(100vh - 24px);
+    overflow-y:auto;
+    padding:16px;
+    margin:auto 0;
+  }
+  .modalbox .grid.two{grid-template-columns:1fr}
+  .modalbox input,.modalbox select,.modalbox button{max-width:100%}
+
+  /* Avoid horizontal overflow from long labels / generated content. */
+  .issue,.row{min-width:0}
+  .issue>div,.row>span{min-width:0;overflow-wrap:anywhere}
+  .issue{align-items:flex-start}
+  .outlet{min-width:0}
+  .outlet>div:last-child{min-width:0}
+
+  /* Ensure action buttons don't force cards wider than the viewport. */
+  button,.btn,select,input{max-width:100%}
+}
+
+@media(max-width:390px){
+  .nav button{font-size:10px;padding:7px 8px}
+  .top h1{font-size:14px}
+  .content{padding-left:9px;padding-right:9px}
+  .card{padding:12px}
+  .hero h2{font-size:17px}
+  .kpi .value{font-size:25px}
+}
+
+@supports (-webkit-touch-callout:none){
+  input,select,button{font-size:16px}
+}
+
+
+/* Robust responsive chart styles */
+.chart-card{min-width:0;overflow:hidden}
+.chart-wrap{width:100%;min-width:0;overflow:hidden}
+.trend-chart{height:210px!important;display:flex!important;align-items:flex-end!important;gap:8px!important;padding:18px 4px 8px!important;overflow:hidden!important}
+.trend-chart .trend-col{height:100%!important;min-width:0;flex:1!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-end!important;gap:6px!important}
+.trend-chart .trend-bar{display:block!important;width:min(34px,70%)!important;min-height:8px!important;border-radius:7px 7px 2px 2px!important;background:var(--accent)!important;flex:0 0 auto!important}
+.trend-chart .trend-value{font-size:9px!important;font-weight:700!important;color:var(--muted)!important;line-height:1!important}
+.trend-chart .trend-label{font-size:9px!important;color:var(--muted)!important;line-height:1!important}
+.ai-trend{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px!important;align-items:end!important;height:180px!important;padding:10px 2px!important}
+.ai-trend .ai-col{min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:5px}
+.ai-trend .ai-bar{width:100%;max-width:46px;min-height:8px;border-radius:7px 7px 2px 2px;background:var(--accent)}
+.ai-trend .ai-label{font-size:9px;color:var(--muted);text-align:center;white-space:nowrap}
+.ai-trend .ai-value{font-size:10px;font-weight:800}
+@media(max-width:720px){
+  .chart-card{width:100%;padding:12px!important}
+  .chart-wrap{height:auto}
+  .trend-chart{height:190px!important;gap:5px!important;padding-left:0!important;padding-right:0!important}
+  .trend-chart .trend-bar{max-width:26px!important}
+  .trend-chart .trend-label{font-size:8px!important}
+  .ai-trend{height:160px!important;gap:7px!important}
+  .ai-trend .ai-bar{max-width:30px}
+  .ai-trend .ai-label{font-size:8px}
+}
+
+
+@media(max-width:720px){
+  .chart-card{min-height:0}
+  #trendBars:empty::after,#aiTrendBars:empty::after{
+    content:"Loading trend…";display:block;text-align:center;padding:70px 0;color:var(--muted);font-size:11px
+  }
+}
+
+
+@media(max-width:720px){
+  .sidebar{position:sticky!important;top:0!important}
+  .top{position:sticky!important;top:0!important;z-index:10}
+  .sidebar + .main .top{margin-top:0}
+  .main{position:relative;z-index:1}
+  .nav button{touch-action:manipulation;-webkit-tap-highlight-color:rgba(255,255,255,.12)}
+  .btn,button,select,input{touch-action:manipulation}
+  .trend-chart,.ai-trend{visibility:visible!important;opacity:1!important}
+}
+
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand">PUNJAB <span>GRILL</span><small style="display:block;font-size:10px;color:#9da6bc;letter-spacing:1px;margin-top:4px">powered by HygieneIQ</small></div>
+  <div class="nav">
+    <small>Command Center</small>
+    <button class="active" data-page="overview">▦ Overview</button>
+    <button data-page="vision">◉ AI Vision Monitor</button>
+    <button data-page="tasks">✓ Hygiene Tasks</button>
+    <button data-page="outlets">⌂ Outlet Performance</button>
+    <small>Restaurant AI</small>
+    <button data-page="kitchen">♨ Kitchen Assistant</button>
+    <button data-page="inventory">▤ Inventory & Waste</button>
+    <button data-page="feedback">♡ Feedback & Reviews</button>
+    <button data-page="insights">✦ AI Insights</button>
+  </div>
+  <div class="mini"><b>Demo mode</b><br>Data is simulated for a case-competition prototype.</div>
+  <div style="margin-top:14px;padding:10px 8px 4px;text-align:center;border-top:1px solid #2a3149;color:#c9a44a;font-size:10px;letter-spacing:1.6px;font-weight:700;">MADE BY TEAM VERTEX</div>
+</aside>
+
+<main class="main">
+<header class="top"><h1 id="pageTitle">Hygiene Command Center</h1><div class="right"><span class="pill">● AI monitoring ON</span><button class="btn" onclick="showToast('Demo notification center opened')">🔔 4</button></div></header>
+<div class="content">
+
+<section id="overview" class="page active">
+  <div class="hero">
+    <div><div style="font-size:11px;color:#bfc6dc;margin-bottom:8px">PUNJAB GRILL · INDIA NETWORK · SAFE FOOD CONTROL</div><h2>Prevent the next Seawoods-style hygiene incident.</h2><p>AI continuously converts camera observations, staff checklists, pest/drainage logs, customer feedback and outlet operations into prioritized corrective actions. The goal is not just detection — it is detection → assignment → verification → learning.</p></div>
+    <div><div class="risk">87/100</div><div style="font-size:11px;color:#cbd0e4">Network Hygiene Score</div></div>
+  </div>
+
+  <div class="grid cards" style="margin-top:16px">
+    <div class="card kpi"><div class="label">Punjab Grill outlets</div><div class="value">54</div><div class="delta good">Pan-India network</div></div>
+    <div class="card kpi"><div class="label">Open corrective actions</div><div class="value" id="openIssues">23</div><div class="delta bad">7 critical</div></div>
+    <div class="card kpi"><div class="label">Avg. resolution time</div><div class="value">11m</div><div class="delta good">↓ 24% vs last month</div></div>
+    <div class="card kpi"><div class="label">FSSAI readiness</div><div class="value">92%</div><div class="delta good">↑ 6.4 pts</div></div>
+  </div>
+
+  <div class="card" style="margin-top:16px;border-left:5px solid var(--bad);background:#fff9fa">
+    <div style="display:flex;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap">
+      <div><span class="badge b-bad">INCIDENT WATCH · SEAWOODS, NAVI MUMBAI</span>
+      <h3 style="margin:9px 0 5px">Temporary food-licence suspension risk</h3>
+      <p class="muted" style="margin:0;font-size:12px">Track cockroach risk, stagnant water, hygiene conditions and mandatory-record completion through one auditable workflow.</p></div>
+      <button class="btn danger" onclick="go('compliance')">Open compliance plan</button>
+    </div>
+  </div>
+
+  <div class="grid two">
+    <div class="card">
+      <div class="section-title"><h2>Live priority queue</h2><button class="btn" onclick="go('tasks')">View all</button></div>
+      <div id="priorityQueue"></div>
+    </div>
+    <div class="card">
+      <div class="section-title"><h2>Outlet risk</h2><span class="muted">next 7 days</span></div>
+      <div id="riskList"></div>
+    </div>
+  </div>
+
+  <div class="grid three">
+    <div class="card chart-card">
+  <div class="section-title"><h2>Compliance trend</h2><span class="muted">Last 7 days</span></div>
+  <div class="chart-wrap">
+    <div class="trend-chart" id="trendBars" aria-label="Seven-day compliance trend">
+  <div class="trend-col"><span class="trend-value">82%</span><span class="trend-bar" style="height:48px"></span><span class="trend-label">Mon</span></div>
+  <div class="trend-col"><span class="trend-value">84%</span><span class="trend-bar" style="height:56px"></span><span class="trend-label">Tue</span></div>
+  <div class="trend-col"><span class="trend-value">83%</span><span class="trend-bar" style="height:52px"></span><span class="trend-label">Wed</span></div>
+  <div class="trend-col"><span class="trend-value">87%</span><span class="trend-bar" style="height:68px"></span><span class="trend-label">Thu</span></div>
+  <div class="trend-col"><span class="trend-value">86%</span><span class="trend-bar" style="height:64px"></span><span class="trend-label">Fri</span></div>
+  <div class="trend-col"><span class="trend-value">89%</span><span class="trend-bar" style="height:76px"></span><span class="trend-label">Sat</span></div>
+  <div class="trend-col"><span class="trend-value">92%</span><span class="trend-bar" style="height:88px"></span><span class="trend-label">Sun</span></div>
+</div>
+  </div>
+</div>
+    <div class="card"><div class="section-title"><h2>Top recurring issues</h2></div><div id="topIssues"></div></div>
+    <div class="card"><div class="section-title"><h2>AI recommendations</h2></div><div id="recommendations"></div></div>
+  </div>
+</section>
+
+<section id="vision" class="page">
+  <div class="section-title"><div><h2>AI Vision Monitor</h2><div class="muted">Simulate a computer-vision hygiene inspection from a kitchen image.</div></div><button class="btn primary" onclick="runScan()">Run AI Scan</button></div>
+  <div class="scan">
+    <div class="card">
+      <div class="drop" id="drop">
+        <div class="placeholder"><b>Upload a kitchen image</b><p class="muted">Drag & drop or choose a photo. In a production system, the model would analyze CCTV frames or scheduled photos.</p><input id="file" type="file" accept="image/*" class="btn"></div>
+        <img id="preview">
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-title"><h2>Detection results</h2><span id="scanStatus" class="badge b-blue">Waiting</span></div>
+      <div id="detections"><p class="muted">No scan yet. Use the demo scan to populate findings.</p></div>
+      <div style="margin-top:15px"><b style="font-size:12px">AI reasoning</b><p id="reasoning" class="muted" style="font-size:12px;line-height:1.5">The production model would combine object detection, action recognition and zone rules. Confidence scores should be treated as alerts for human review, not proof of contamination.</p></div>
+    </div>
+  </div>
+  <div class="grid three">
+    <div class="card"><b>Detection layer</b><p class="muted">Identify observable events: uncovered food, overflowing bins, PPE gaps, spills, blocked handwash stations and unsafe storage.</p></div>
+    <div class="card"><b>Risk engine</b><p class="muted">Prioritize by severity, location, recurrence, time and whether the issue can affect food safety or customer experience.</p></div>
+    <div class="card"><b>Human-in-the-loop</b><p class="muted">Managers confirm high-impact alerts; the system records false positives to improve thresholds and models.</p></div>
+  </div>
+</section>
+
+<section id="tasks" class="page">
+  <div class="section-title"><div><h2>Hygiene Task Center</h2><div class="muted">Every detection becomes an accountable action.</div></div><button class="btn primary" onclick="newTask()">+ Create task</button></div>
+  <div class="toolbar"><input id="taskSearch" placeholder="Search issue/outlet..." oninput="renderTasks()"><select id="taskFilter" onchange="renderTasks()"><option value="all">All status</option><option value="open">Open</option><option value="progress">In progress</option><option value="done">Resolved</option></select></div>
+  <div class="card" style="margin-top:15px"><table><thead><tr><th>Issue</th><th>Outlet</th><th>Priority</th><th>Owner</th><th>SLA</th><th>Status</th><th></th></tr></thead><tbody id="taskTable"></tbody></table></div>
+</section>
+
+<section id="outlets" class="page">
+  <div class="section-title"><div><h2>Outlet Performance</h2><div class="muted">Filter the 54 Punjab Grill outlets by operating region and focus management attention where risk is highest.</div></div>
+    <div class="toolbar"><select id="regionSelect" onchange="filterOutlets()"><option value="all">All regions</option><option value="north">North</option><option value="west">West</option><option value="south">South</option></select><select id="riskSelect" onchange="filterOutlets()"><option value="all">All risk levels</option><option value="critical">Critical</option><option value="watch">Watch</option><option value="healthy">Healthy</option></select></div>
+  </div>
+  <div class="grid cards" style="margin-bottom:16px"><div class="card kpi"><div class="label">North</div><div class="value">18</div><div class="delta">outlets</div></div><div class="card kpi"><div class="label">West</div><div class="value">14</div><div class="delta">outlets</div></div><div class="card kpi"><div class="label">South</div><div class="value">12</div><div class="delta">outlets</div></div><div class="card kpi"><div class="label">At-risk outlets</div><div class="value">7</div><div class="delta bad">requires action</div></div></div>
+  <div class="card"><table><thead><tr><th>Outlet</th><th>Region</th><th>Score</th><th>Open issues</th><th>Resolution</th><th>7-day risk</th><th>Trend</th></tr></thead><tbody id="outletTable"></tbody></table></div>
+</section>
+
+<section id="compliance" class="page"><div class="section-title"><div><h2>FSSAI Readiness Center</h2><div class="muted">Digital evidence and corrective-action control for the hygiene gaps highlighted at Seawoods.</div></div><button class="btn primary" onclick="generateReport()">Generate audit pack</button></div><div class="grid cards"><div class="card kpi"><div class="label">Critical controls</div><div class="value">18/20</div><div class="delta good">90% complete</div></div><div class="card kpi"><div class="label">Mandatory records</div><div class="value">94%</div><div class="delta good">digitally captured</div></div><div class="card kpi"><div class="label">Pest controls</div><div class="value">88%</div><div class="delta warn">2 actions due</div></div><div class="card kpi"><div class="label">Evidence coverage</div><div class="value">97%</div><div class="delta good">photo/log verified</div></div></div><div class="grid two"><div class="card"><div class="section-title"><h2>Seawoods corrective-action plan</h2><span class="badge b-bad">Priority</span></div><div class="issue"><div><strong>Cockroach / pest control</strong><p>Seal entry points · treatment · daily sighting log</p></div><span class="badge b-warn">In progress</span></div><div class="issue"><div><strong>Stagnant water</strong><p>Drainage inspection · eliminate pooling · photo proof</p></div><span class="badge b-bad">Open</span></div><div class="issue"><div><strong>Mandatory records</strong><p>Cleaning schedule · pest log · staff fitness/training records</p></div><span class="badge b-good">92%</span></div><div class="issue"><div><strong>Deep-clean verification</strong><p>Manager sign-off + before/after evidence</p></div><span class="badge b-blue">Pending</span></div></div><div class="card"><div class="section-title"><h2>Compliance control map</h2></div><div class="row"><span><b>Cleaning & sanitation</b><br><small class="muted">Daily + shift checks</small></span><span class="badge b-good">98%</span></div><div class="row"><span><b>Pest management</b><br><small class="muted">Treatment + sighting evidence</small></span><span class="badge b-warn">88%</span></div><div class="row"><span><b>Water / drainage</b><br><small class="muted">Stagnation & drain checks</small></span><span class="badge b-warn">84%</span></div><div class="row"><span><b>Staff records</b><br><small class="muted">Fitness + training</small></span><span class="badge b-good">96%</span></div><div class="row"><span><b>Food storage / expiry</b><br><small class="muted">FEFO + batch evidence</small></span><span class="badge b-good">95%</span></div></div></div></section>
+<section id="pest" class="page"><div class="section-title"><div><h2>Pest & Drainage Intelligence</h2><div class="muted">A dedicated control layer for the exact operational failures that triggered the Seawoods response.</div></div><button class="btn primary" onclick="showToast('Inspection round created')">Start inspection round</button></div><div class="grid three"><div class="card"><span class="badge b-bad">3 open</span><h3>Pest sightings</h3><p class="muted">AI clusters sightings by zone, time and recurrence to identify hotspots.</p><button class="btn" onclick="showToast('Pest hotspot report generated')">View hotspots</button></div><div class="card"><span class="badge b-warn">2 open</span><h3>Drainage / stagnant water</h3><p class="muted">Staff log water pooling with a timestamped photo; repeat failures escalate to facilities.</p><button class="btn" onclick="showToast('Facilities escalation created')">Escalate</button></div><div class="card"><span class="badge b-good">96%</span><h3>Service-provider compliance</h3><p class="muted">Track pest-control visits, treatment dates, invoices and evidence in one timeline.</p><button class="btn" onclick="go('records')">Open records</button></div></div><div class="card" style="margin-top:16px"><div class="section-title"><h2>Incident timeline · Seawoods</h2><span class="muted">Demo data</span></div><div class="row"><span><b>Daily kitchen inspection</b><br><small class="muted">Pest check + drain check</small></span><span class="badge b-good">Completed 08:10</span></div><div class="row"><span><b>Pest-control treatment</b><br><small class="muted">Vendor evidence attached</small></span><span class="badge b-blue">09:30</span></div><div class="row"><span><b>Stagnant-water corrective action</b><br><small class="muted">Drainage repair verification</small></span><span class="badge b-bad">Due 14:00</span></div></div></section>
+<section id="records" class="page"><div class="section-title"><div><h2>Digital Records & Audit Vault</h2><div class="muted">Never lose a cleaning, pest, training or temperature record before an inspection.</div></div><button class="btn primary" onclick="generateReport()">Export audit pack</button></div><div class="card"><table><thead><tr><th>Record</th><th>Outlet</th><th>Owner</th><th>Last updated</th><th>Evidence</th><th>Status</th></tr></thead><tbody><tr><td><b>Daily cleaning schedule</b></td><td>Seawoods</td><td>Shift manager</td><td>Today 08:10</td><td>4 photos</td><td><span class="badge b-good">Complete</span></td></tr><tr><td><b>Pest-control log</b></td><td>Seawoods</td><td>Facilities</td><td>Today 09:30</td><td>2 documents</td><td><span class="badge b-good">Complete</span></td></tr><tr><td><b>Staff medical fitness</b></td><td>All outlets</td><td>HR</td><td>Yesterday</td><td>48 records</td><td><span class="badge b-warn">2 due</span></td></tr><tr><td><b>FOSTAC training</b></td><td>All outlets</td><td>Training lead</td><td>Yesterday</td><td>52 certificates</td><td><span class="badge b-warn">2 due</span></td></tr><tr><td><b>Temperature / cold-chain logs</b></td><td>Seawoods</td><td>Kitchen lead</td><td>Today 09:00</td><td>12 readings</td><td><span class="badge b-good">Complete</span></td></tr></tbody></table></div></section>
+<section id="kitchen" class="page">
+  <div class="section-title"><div><h2>Kitchen Assistant</h2><div class="muted">The employee-facing layer from the original concept: pending orders, preparation time, priority and ingredient availability.</div></div></div>
+  <div class="grid two">
+    <div class="card">
+      <div class="section-title"><h2>AI kitchen queue</h2><span class="badge b-blue">Live</span></div>
+      <div class="list">
+        <div class="row"><span><b>#1042 · Paneer Bowl</b><br><small class="muted">Prep 9m · Ingredient ready</small></span><span class="badge b-bad">Priority</span></div>
+        <div class="row"><span><b>#1043 · Masala Dosa</b><br><small class="muted">Prep 7m · 2 pending</small></span><span class="badge b-warn">High</span></div>
+        <div class="row"><span><b>#1044 · Veg Thali</b><br><small class="muted">Prep 13m · All ready</small></span><span class="badge b-blue">Normal</span></div>
+      </div>
+    </div>
+    <div class="card chat"><div><b>Ask Kitchen AI</b><div class="muted" style="font-size:11px">Operational assistant</div></div><div class="messages" id="messages"><div class="msg ai">Try: “What should we prepare first?” or “Which ingredients may run out today?”</div></div><div class="chatbar"><input id="chatInput" placeholder="Ask the kitchen assistant..." onkeydown="if(event.key==='Enter')sendChat()"><button class="btn primary" onclick="sendChat()">Send</button></div></div>
+  </div>
+</section>
+
+<section id="inventory" class="page">
+  <div class="section-title"><div><h2>Smart Raw Material & Inventory</h2><div class="muted">Track purchase/manufacturing data, expiry, FIFO/FEFO and stock-out alerts.</div></div>
+    <button class="btn primary" onclick="openInventoryModal()">+ Add inventory</button>
+  </div>
+  <div class="toolbar">
+    <input id="inventorySearch" placeholder="Search ingredient / batch..." oninput="renderInventory()">
+    <select id="inventoryFilter" onchange="renderInventory()">
+      <option value="all">All stock</option>
+      <option value="urgent">Near expiry</option>
+      <option value="watch">Watch</option>
+      <option value="healthy">Healthy</option>
+    </select>
+  </div>
+  <div class="grid cards">
+    <div class="card kpi"><div class="label">Near expiry</div><div class="value">14</div><div class="delta bad">₹18,400 at risk</div></div>
+    <div class="card kpi"><div class="label">Stock-out risk</div><div class="value">6</div><div class="delta warn">Next 48 hours</div></div>
+    <div class="card kpi"><div class="label">Waste this week</div><div class="value">4.8%</div><div class="delta good">↓ 1.2 pts</div></div>
+    <div class="card kpi"><div class="label">FEFO adherence</div><div class="value">96%</div><div class="delta good">↑ 3.1 pts</div></div>
+  </div>
+  <div class="card" style="margin-top:15px;margin-bottom:15px;background:#f8f8ff">
+    <b style="font-size:12px">How adding inventory works:</b>
+    <span class="muted" style="font-size:12px"> Enter the batch once → AI calculates expiry risk → FEFO recommendation appears → the batch is searchable in the outlet inventory.</span>
+  </div>
+  <div class="card"><table><thead><tr><th>Ingredient</th><th>Batch</th><th>Qty</th><th>Expiry</th><th>AI action</th><th>Status</th></tr></thead><tbody id="inventoryTable"></tbody></table></div>
+</section>
+
+<section id="feedback" class="page">
+  <div class="section-title"><div><h2>Feedback & Review Intelligence</h2><div class="muted">AI summarizes reviews and surfaces where customer experience lags.</div></div></div>
+  <div class="grid two">
+    <div class="card"><div class="section-title"><h2>Sentiment themes</h2></div><div class="list">
+      <div class="row"><span><b>Cleanliness</b><br><small class="muted">Tables / washrooms / floor</small></span><span class="badge b-bad">↓ 14%</span></div>
+      <div class="row"><span><b>Food quality</b><br><small class="muted">Taste / temperature</small></span><span class="badge b-good">↑ 8%</span></div>
+      <div class="row"><span><b>Service speed</b><br><small class="muted">Waiting / order accuracy</small></span><span class="badge b-warn">Mixed</span></div>
+    </div></div>
+    <div class="card"><div class="section-title"><h2>AI owner brief</h2></div><p style="font-size:13px;line-height:1.6">“Cleanliness complaints increased at Powai #43. 61% mention the washroom or dining tables. Recommend increasing checks during 7–9 PM and linking each check to photo verification.”</p><button class="btn primary" onclick="showToast('Action plan created for Powai #43')">Create action plan</button></div>
+  </div>
+</section>
+
+<section id="insights" class="page">
+  <div class="section-title"><div><h2>AI Insights & Prediction</h2><div class="muted">Move from reactive inspection to proactive risk management.</div></div></div>
+  <div class="grid three">
+    <div class="card"><span class="badge b-bad">78% risk</span><h3>Powai #43 may fail next audit</h3><p class="muted">Driven by recurring waste-bin, PPE and cleaning-task violations.</p><button class="btn" onclick="showToast('Targeted intervention plan generated')">Generate intervention</button></div>
+    <div class="card"><span class="badge b-warn">₹18.4k</span><h3>Inventory at expiry risk</h3><p class="muted">AI recommends FEFO-first production and a controlled offer to reduce waste.</p><button class="btn" onclick="go('inventory')">Open inventory</button></div>
+    <div class="card"><span class="badge b-blue">↑ 22%</span><h3>Evening hygiene load</h3><p class="muted">Issue frequency peaks between 7–9 PM. Adjust cleaning rounds and staffing.</p><button class="btn" onclick="go('tasks')">Schedule checks</button></div>
+  </div>
+  <div class="card chart-card" style="margin-top:16px">
+    <div class="section-title"><h2>AI hygiene trend</h2><span class="muted">Illustrative weekly risk signals</span></div>
+    <div class="chart-wrap"><div class="ai-trend" id="aiTrendBars" aria-label="AI hygiene risk trend">
+          <div class="ai-col"><span class="ai-value">61%</span><span class="ai-bar" style="height:116px"></span><span class="ai-label">W-3</span></div>
+          <div class="ai-col"><span class="ai-value">58%</span><span class="ai-bar" style="height:110px"></span><span class="ai-label">W-2</span></div>
+          <div class="ai-col"><span class="ai-value">64%</span><span class="ai-bar" style="height:122px"></span><span class="ai-label">W-1</span></div>
+          <div class="ai-col"><span class="ai-value">55%</span><span class="ai-bar" style="height:105px"></span><span class="ai-label">Now</span></div>
+        </div></div>
+  </div>
+  <div class="card" style="margin-top:16px"><h3>How the AI closes the loop</h3><div class="grid three">
+    <div><b>1. Sense</b><p class="muted">CCTV/image signals, checklists, inventory and reviews.</p></div>
+    <div><b>2. Decide</b><p class="muted">Classify risk, predict recurrence and prioritize actions.</p></div>
+    <div><b>3. Act & learn</b><p class="muted">Assign → resolve → verify → measure → improve.</p></div>
+  </div></div>
+</section>
+
+</div></main></div>
+
+
+<div class="modal" id="inventoryModal"><div class="modalbox">
+  <div class="section-title"><h2>Add inventory batch</h2><button class="btn" onclick="closeInventoryModal()">×</button></div>
+  <p class="muted" style="font-size:12px;margin-top:-4px">Add a raw-material batch. HygieneIQ will calculate expiry risk and recommend FEFO/FIFO action.</p>
+
+  <label style="font-size:12px;font-weight:700">Ingredient</label>
+  <input id="invIngredient" placeholder="e.g. Paneer" style="width:100%;margin:7px 0 12px;padding:10px;border:1px solid var(--line);border-radius:9px">
+
+  <div class="grid two" style="gap:10px">
+    <div><label style="font-size:12px;font-weight:700">Batch ID</label>
+      <input id="invBatch" placeholder="e.g. PG-PAN-026" style="width:100%;margin:7px 0 12px;padding:10px;border:1px solid var(--line);border-radius:9px">
+    </div>
+    <div><label style="font-size:12px;font-weight:700">Quantity</label>
+      <input id="invQty" placeholder="e.g. 8 kg" style="width:100%;margin:7px 0 12px;padding:10px;border:1px solid var(--line);border-radius:9px">
+    </div>
+  </div>
+
+  <div class="grid two" style="gap:10px">
+    <div><label style="font-size:12px;font-weight:700">Purchase date</label>
+      <input id="invPurchase" type="date" style="width:100%;margin:7px 0 12px;padding:10px;border:1px solid var(--line);border-radius:9px">
+    </div>
+    <div><label style="font-size:12px;font-weight:700">Expiry date</label>
+      <input id="invExpiry" type="date" style="width:100%;margin:7px 0 12px;padding:10px;border:1px solid var(--line);border-radius:9px">
+    </div>
+  </div>
+
+  <label style="font-size:12px;font-weight:700">Outlet</label>
+  <select id="invOutlet" style="width:100%;margin:7px 0 16px;padding:10px;border:1px solid var(--line);border-radius:9px">
+    <option>Seawoods, Navi Mumbai</option><option>Powai, Mumbai</option><option>Gurugram Golf Course</option>
+    <option>Delhi Aerocity</option><option>Indiranagar, Bengaluru</option><option>Chennai Alwarpet</option>
+  </select>
+
+  <button class="btn primary" onclick="saveInventory()">Add batch & run AI check</button>
+</div></div>
+<div class="modal" id="modal"><div class="modalbox"><div class="section-title"><h2>Create hygiene task</h2><button class="btn" onclick="closeModal()">×</button></div>
+<label style="font-size:12px;font-weight:700">Issue</label><input id="newIssue" style="width:100%;margin:7px 0 12px;padding:10px;border:1px solid var(--line);border-radius:9px" value="Manual hygiene inspection required">
+<label style="font-size:12px;font-weight:700">Outlet</label><select id="newOutlet" style="width:100%;margin:7px 0 12px;padding:10px;border:1px solid var(--line);border-radius:9px"><option>Indiranagar #08</option><option>Koramangala #17</option><option>Powai #43</option><option>Connaught #21</option></select>
+<button class="btn primary" onclick="saveTask()">Assign task</button></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const issues=[
+ {issue:"Uncovered food container",outlet:"Powai #43",priority:"Critical",owner:"Kitchen lead",sla:"10 min",status:"open"},
+ {issue:"Waste bin above 90%",outlet:"Koramangala #17",priority:"High",owner:"Stewarding",sla:"15 min",status:"progress"},
+ {issue:"PPE / hairnet non-compliance",outlet:"Connaught #21",priority:"High",owner:"Shift manager",sla:"15 min",status:"open"},
+ {issue:"Dining table cleaning overdue",outlet:"Powai #43",priority:"Medium",owner:"FOH lead",sla:"20 min",status:"open"},
+ {id:5,issue:"Handwash station blocked",outlet:"Indiranagar #08",priority:"High",owner:"Stewarding",sla:"10 min",status:"done"}
+];
+function go(page){
+ document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+ const target=document.getElementById(page);
+ if(!target){console.error('Missing page:',page);return;}
+ target.classList.add('active');
+ window.scrollTo({top:0,behavior:'instant'});
+ document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===page));
+ const activeBtn=document.querySelector('.nav button.active');
+ if(activeBtn && window.innerWidth<=720) activeBtn.scrollIntoView({behavior:'auto',block:'nearest',inline:'center'});
+ const names={overview:'Punjab Grill Hygiene Command Center',vision:'AI Vision Monitor',tasks:'Corrective Action Center',outlets:'Outlet Performance',compliance:'FSSAI Readiness Center',pest:'Pest & Drainage Intelligence',records:'Digital Records & Audit Vault',kitchen:'Kitchen Assistant',inventory:'Smart Inventory',feedback:'Feedback & Review Intelligence',insights:'AI Insights'};document.getElementById('pageTitle').textContent=names[page]; if(page==='tasks')renderTasks(); if(page==='inventory')renderInventory()}
+function bindNavigation(){
+  document.querySelectorAll('.nav button').forEach(b=>{
+    b.addEventListener('click',function(ev){
+      ev.preventDefault();
+      ev.stopPropagation();
+      go(this.dataset.page);
+    },{passive:false});
+  });
+}
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded',bindNavigation,{once:true});
+}else{
+  bindNavigation();
+}
+function badge(p){return p==='Critical'?'b-bad':p==='High'?'b-warn':'b-blue'}
+const outletData=[{name:"Seawoods, Navi Mumbai",region:"west",score:61,issues:8,resolution:"26m",risk:86,riskClass:"critical",trend:"↓",trendClass:"bad"},{name:"Powai, Mumbai",region:"west",score:67,issues:7,resolution:"21m",risk:72,riskClass:"critical",trend:"↓",trendClass:"bad"},{name:"Gurugram Golf Course",region:"north",score:74,issues:6,resolution:"18m",risk:63,riskClass:"critical",trend:"↓",trendClass:"bad"},{name:"Delhi Aerocity",region:"north",score:81,issues:4,resolution:"13m",risk:46,riskClass:"watch",trend:"→",trendClass:"warn"},{name:"Noida Sector 18",region:"north",score:88,issues:3,resolution:"10m",risk:28,riskClass:"healthy",trend:"↑",trendClass:"good"},{name:"Indiranagar, Bengaluru",region:"south",score:94,issues:2,resolution:"7m",risk:18,riskClass:"healthy",trend:"↑",trendClass:"good"},{name:"Chennai Alwarpet",region:"south",score:91,issues:2,resolution:"8m",risk:21,riskClass:"healthy",trend:"↑",trendClass:"good"},{name:"Chandigarh Elante",region:"north",score:89,issues:3,resolution:"11m",risk:25,riskClass:"healthy",trend:"↑",trendClass:"good"}];
+function filterOutlets(){const region=document.getElementById('regionSelect').value,risk=document.getElementById('riskSelect').value;const data=outletData.filter(o=>(region==='all'||o.region===region)&&(risk==='all'||o.riskClass===risk));document.getElementById('outletTable').innerHTML=data.map(o=>{const sc=o.score>=90?'b-good':o.score>=80?'b-warn':'b-bad';const rb=o.risk>=65?'b-bad':o.risk>=35?'b-warn':'b-good';return `<tr><td><b>${o.name}</b></td><td style="text-transform:capitalize">${o.region}</td><td><span class="badge ${sc}">${o.score}</span></td><td>${o.issues}</td><td>${o.resolution}</td><td><span class="badge ${rb}">${o.risk}%</span></td><td class="${o.trendClass}">${o.trend}</td></tr>`}).join('')||`<tr><td colspan="7" class="muted" style="text-align:center;padding:25px">No outlets match these filters.</td></tr>`}
+
+let inventoryData = [
+ {ingredient:"Paneer",batch:"PG-PAN-021",qty:"8 kg",expiry:"Tomorrow",days:1,action:"Prioritize in production",status:"urgent"},
+ {ingredient:"Tomatoes",batch:"PG-TOM-114",qty:"21 kg",expiry:"3 days",days:3,action:"FEFO batch first",status:"watch"},
+ {ingredient:"Rice",batch:"PG-RIC-087",qty:"42 kg",expiry:"34 days",days:34,action:"No action",status:"healthy"}
+];
+
+function inventoryBadge(status){return status==='urgent'?'b-bad':status==='watch'?'b-warn':'b-good'}
+function inventoryLabel(status){return status==='urgent'?'Urgent':status==='watch'?'Watch':'Healthy'}
+
+function renderInventory(){
+ const q=(document.getElementById('inventorySearch')?.value||'').toLowerCase();
+ const f=document.getElementById('inventoryFilter')?.value||'all';
+ const data=inventoryData.filter(x=>
+   (f==='all'||x.status===f) &&
+   (`${x.ingredient} ${x.batch} ${x.qty}`.toLowerCase().includes(q))
+ );
+ const table=document.getElementById('inventoryTable');
+ if(!table)return;
+ table.innerHTML=data.map(x=>`<tr>
+   <td><b>${x.ingredient}</b></td><td>${x.batch}</td><td>${x.qty}</td><td>${x.expiry}</td>
+   <td>${x.action}</td><td><span class="badge ${inventoryBadge(x.status)}">${inventoryLabel(x.status)}</span></td>
+ </tr>`).join('') || `<tr><td colspan="6" class="muted" style="text-align:center;padding:25px">No inventory batches match your filter.</td></tr>`;
+}
+
+function openInventoryModal(){
+ document.getElementById('inventoryModal').classList.add('open');
+ const now=new Date();
+ document.getElementById('invPurchase').value=now.toISOString().slice(0,10);
+}
+function closeInventoryModal(){document.getElementById('inventoryModal').classList.remove('open')}
+
+function saveInventory(){
+ const ingredient=document.getElementById('invIngredient').value.trim();
+ const batch=document.getElementById('invBatch').value.trim() || ('PG-'+Date.now().toString().slice(-6));
+ const qty=document.getElementById('invQty').value.trim();
+ const expiry=document.getElementById('invExpiry').value;
+ if(!ingredient || !qty || !expiry){showToast('Please enter ingredient, quantity and expiry date');return;}
+
+ const today=new Date(); today.setHours(0,0,0,0);
+ const exp=new Date(expiry+'T00:00:00');
+ const days=Math.ceil((exp-today)/86400000);
+ let status='healthy', action='No action';
+ if(days<=2){status='urgent';action='Use first / escalate expiry risk'}
+ else if(days<=7){status='watch';action='Apply FEFO in next production'}
+
+ inventoryData.unshift({
+   ingredient,batch,qty,
+   expiry:days<0?'Expired':days===0?'Today':days===1?'Tomorrow':`${days} days`,
+   days,action,status
+ });
+ closeInventoryModal();
+ renderInventory();
+ showToast(`${ingredient} added · AI marked ${inventoryLabel(status).toLowerCase()}`);
+}
+
+function generateReport(){showToast('Audit pack prepared: cleaning + pest + drainage + staff + expiry evidence')}
+function updateIssueKPI(){const el=document.getElementById('openIssues');if(el)el.textContent=issues.filter(x=>x.status!=='done').length;}
+function renderAITrend(){
+ const el=document.getElementById('aiTrendBars');
+ if(!el)return;
+ const data=[61,58,64,55];
+ const labels=['W-3','W-2','W-1','Now'];
+ el.innerHTML=data.map((v,i)=>`<div class="ai-col"><span class="ai-value">${v}%</span><span class="ai-bar" style="height:${Math.max(12,Math.round(v*1.9))}px"></span><span class="ai-label">${labels[i]}</span></div>`).join('');
+}
+function renderOverview(){
+ document.getElementById('priorityQueue').innerHTML=issues.filter(x=>x.status!=='done').slice(0,4).map((x,i)=>`<div class="issue"><div><strong>${x.issue}</strong><p>${x.outlet} · ${x.owner}</p></div><span class="badge ${badge(x.priority)}">${x.priority}</span></div>`).join('');
+ const risks=[['Seawoods, Navi Mumbai','86%','b-bad'],['Gurugram','63%','b-bad'],['Mumbai','52%','b-warn'],['Bengaluru','28%','b-good']];
+ document.getElementById('riskList').innerHTML=risks.map(r=>`<div class="row"><div class="outlet"><div class="score">${r[1].replace('%','')}</div><div><b>${r[0]}</b><br><small class="muted">Predicted risk</small></div></div><span class="badge ${r[2]}">${r[1]}</span></div>`).join('');
+ document.getElementById('trendBars').innerHTML=[82,84,83,87,86,89,92].map((v,i)=>`<div class="trend-col"><span class="trend-value">${v}%</span><span class="trend-bar" style="height:${Math.max(8,Math.round((v-70)*4))}px"></span><span class="trend-label">${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][i]}</span></div>`).join('');
+ document.getElementById('topIssues').innerHTML=[['Cleaning overdue','31%'],['PPE compliance','22%'],['Waste management','19%'],['Food covered','12%']].map(x=>`<div class="row"><span>${x[0]}</span><b>${x[1]}</b></div>`).join('');
+ document.getElementById('recommendations').innerHTML=['Increase 7–9 PM cleaning rounds','Coach two outlets with repeated PPE violations','Use FEFO for 14 near-expiry ingredients'].map(x=>`<div class="issue"><div><strong>${x}</strong></div><span class="badge b-blue">AI</span></div>`).join('');
+}
+function renderTasks(){
+ const q=(document.getElementById('taskSearch')?.value||'').toLowerCase(), f=document.getElementById('taskFilter')?.value||'all';
+ const filtered=issues.filter(x=>(f==='all'||x.status===f)&&(`${x.issue} ${x.outlet}`.toLowerCase().includes(q)));
+ document.getElementById('taskTable').innerHTML=filtered.map((x)=>`<tr><td><b>${x.issue}</b></td><td>${x.outlet}</td><td><span class="badge ${badge(x.priority)}">${x.priority}</span></td><td>${x.owner}</td><td>${x.sla}</td><td><span class="badge ${x.status==='done'?'b-good':x.status==='progress'?'b-warn':'b-bad'}">${x.status==='done'?'Resolved':x.status==='progress'?'In progress':'Open'}</span></td><td><button class="btn" onclick="resolveTask(${x.id})">${x.status==='done'?'Reopen':'Resolve'}</button></td></tr>`).join('');
+}
+function resolveTask(id){const task=issues.find(x=>x.id===id);if(!task)return;task.status=task.status==='done'?'open':'done';renderTasks();renderOverview();updateIssueKPI();showToast(task.status==='done'?'Task resolved and logged':'Task reopened')}
+function newTask(){document.getElementById('modal').classList.add('open')}
+function closeModal(){document.getElementById('modal').classList.remove('open')}
+document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});
+document.getElementById('inventoryModal').addEventListener('click',e=>{if(e.target.id==='inventoryModal')closeInventoryModal()});
+function saveTask(){issues.unshift({id:Date.now(),issue:document.getElementById('newIssue').value,outlet:document.getElementById('newOutlet').value,priority:'High',owner:'Shift manager',sla:'15 min',status:'open'});closeModal();renderTasks();renderOverview();showToast('Task assigned successfully')}
+function showToast(t){const e=document.getElementById('toast');e.textContent=t;e.style.display='block';setTimeout(()=>e.style.display='none',2400)}
+document.getElementById('file').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{document.getElementById('preview').src=r.result;document.getElementById('preview').style.display='block';document.querySelector('.placeholder').style.display='none'};r.readAsDataURL(f)});
+function runScan(){
+ document.getElementById('scanStatus').textContent='Scanning…';document.getElementById('scanStatus').className='badge b-warn';
+ setTimeout(()=>{document.getElementById('scanStatus').textContent='4 findings';document.getElementById('scanStatus').className='badge b-bad';
+ document.getElementById('detections').innerHTML=[
+ ['🔴','Possible pest activity / cockroach hotspot','94% confidence','Critical'],
+ ['🔴','Stagnant water / pooling detected','91% confidence','Critical'],
+ ['🟠','Unhygienic surface / cleaning gap','88% confidence','High'],
+ ['🟠','PPE / hairnet gap','82% confidence','High']
+ ].map(x=>`<div class="issue"><div><strong>${x[0]} ${x[1]}</strong><p>${x[2]}</p></div><span class="badge ${badge(x[3])}">${x[3]}</span></div>`).join('') + `<button class="btn primary" style="margin-top:8px" onclick="createScanTask()">Create corrective-action task</button>`;
+ document.getElementById('reasoning').textContent='The demo flags observable conditions and ranks them by operational risk. In production, alerts would be linked to camera zone rules, historical recurrence and human confirmation before high-impact actions.';
+ showToast('AI hygiene scan complete');
+ },900);
+}
+function createScanTask(){issues.unshift({id:Date.now(),issue:'AI vision: pest / hygiene condition requires verification',outlet:'Seawoods, Navi Mumbai',priority:'Critical',owner:'Outlet manager',sla:'10 min',status:'open'});updateIssueKPI();renderOverview();showToast('AI finding converted into a corrective-action task');}
+function sendChat(){const inp=document.getElementById('chatInput'),q=inp.value.trim();if(!q)return;const m=document.getElementById('messages');m.innerHTML+=`<div class="msg me">${q}</div>`;let a='Prioritize #1042, then #1043. Paneer is the most time-sensitive ingredient based on the current queue.';if(/ingredient|stock|run out|expiry/i.test(q))a='Paneer expires tomorrow and is flagged urgent. Tomatoes should follow FEFO. Rice is healthy. Consider using the near-expiry paneer in today’s planned production.';if(/hygiene|clean|wash|food/i.test(q))a='There are 3 open high-priority hygiene actions in the current demo. Resolve the uncovered-food issue first, then the handwash/waste-related tasks.';m.innerHTML+=`<div class="msg ai">${a}</div>`;inp.value='';m.scrollTop=m.scrollHeight}
+function bootDashboard(){
+  try{
+    renderOverview();
+    renderTasks();
+    filterOutlets();
+    renderInventory();
+    renderAITrend();
+    updateIssueKPI();
+  }catch(err){
+    console.error('HygieneIQ boot error:',err);
+  }
+}
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded',bootDashboard,{once:true});
+}else{
+  bootDashboard();
+}
+
+window.addEventListener('error',function(e){
+  console.error('HygieneIQ runtime error:',e.error||e.message);
+});
+
+</script>
+</body>
+</html>
